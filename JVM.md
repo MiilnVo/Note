@@ -30,9 +30,10 @@
   * 分配策略
     1. 对象优先在Eden区分配
     2. 大对象直接进入老年代
-    3. 长期存活的对象将进入老年代（默认经历15次回收的对象）和动态年龄计算
-    4. 老年代空间担保：当Eden区满时触发垃圾回收，在把存活对象复制到Survivor区时其空间也满了，则会把存活对象放到老年代
-
+    3. 长期存活的对象将进入老年代（默认经历15次回收的对象）
+    4. 动态年龄计算：年龄从小到大进行累加，当加入某个年龄段后，累加和超过Survivor区域*TargetSurvivorRatio时，比这个年龄大的对象进行晋升
+  5. 老年代空间担保：当Eden区满时触发垃圾回收，在把存活对象复制到Survivor区时其空间也满了，则会把存活对象放到老年代
+    
   * 对象
 
     * 对象头（Mark Word）：哈希码、GC分代年龄、锁状态标志等 + 类型指针
@@ -46,6 +47,10 @@
     创建流程：new => 加载类 => 分配堆内存 => 初始化为零值 => 设置对象头 => 执行`<init>`
 
     直接指针访问：栈的局部变量表中的reference类型存储的是堆中的对象地址
+
+  > 内存溢出：创建太多对象导致空间不足
+  >
+  > 内存泄漏：无用的对象没有回收
 
   【参考】
 
@@ -142,6 +147,8 @@ https://juejin.im/post/6844903974676463629
 https://www.jianshu.com/p/c3a8a108da00
 
 https://tech.meituan.com/2017/12/29/jvm-optimize.html
+
+https://club.perfma.com/article/1870333
 
 
 
@@ -261,6 +268,13 @@ https://tech.meituan.com/2017/12/29/jvm-optimize.html
   * 扩展类加载器：<JAVA_HOME>\lib\ext
   * 应用程序类加载器：<Class_Path>
 
+* 加载时机（类的主动引用）
+  1. new对象
+  2. 访问或修改某个类静态成员变量或静态方法
+  3. 反射`Class.forName("xxx")`
+  4. 子类初始化时先对父类初始化
+  5. `main()`方法所在的类
+
 * 加载流程
 
   加载 => 验证 => 准备 => 解析 => 初始化 => 使用 => 卸载
@@ -283,7 +297,6 @@ https://tech.meituan.com/2017/12/29/jvm-optimize.html
   
      ​               在多线程环境中能保证只执行一次`<clinit>`
   
-     ​               虚拟机规范严格规定了有且只有五种情况必须对类进行初始化（类的主动引用）
 
 > 数组类不通过类加载类创建，由JVM直接创建
 
@@ -377,6 +390,8 @@ https://tech.meituan.com/2017/12/29/jvm-optimize.html
 
 > 默认空余堆内存小于40%时，JVM就会增大堆直到`-Xmx`的最大限制；空余堆内存大于70%时，JVM会减少堆直到`-Xms`的最小限制
 
+`–XX:NewRatio`：设置年轻代和老年代的比例
+
 `-XX:+UseAdaptiveSizePolicy`：使Parallel Scavenge可以自动调节堆空间的大小
 
 `-XX:MaxGCPauseMillis`：设置Parallel Scavenge的最大延迟时间
@@ -386,6 +401,12 @@ https://tech.meituan.com/2017/12/29/jvm-optimize.html
 `-XX:+UseCompressedOops`：在64位JVM环境下压缩对象的指针，节省内存
 
 `-XX:+PrintGC` / `-XX:+PrintGCDetails`：输出GC日志
+
+`-Xloggc:/.../gc.log`：设置GC日志的路径
+
+`-XX:+PrintTenuringDestribution`：输出GC后Survivor区年龄分布的信息
+
+`-XX:+PrintGCTimeStamps`：输出GC时间戳
 
 `-XX:+PrintGCApplicationStoppedTime`：输出STW时间
 
@@ -398,6 +419,10 @@ https://zhuanlan.zhihu.com/p/110517640
 https://tech.meituan.com/2017/12/29/jvm-optimize.html
 
 https://blog.csdn.net/renfufei/article/details/55102729
+
+https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
+
+https://segmentfault.com/a/1190000016427465
 
 
 
