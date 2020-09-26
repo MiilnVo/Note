@@ -1011,9 +1011,9 @@ https://blog.csdn.net/tp7309/article/details/76532366
         public static class AbortPolicy implements RejectedExecutionHandler {...｝
         // 2.丢弃任务
         public static class DiscardPolicy implements RejectedExecutionHandler {...}
-        // 3.移除等待队列中的队头任务，重新尝试加入队列
+        // 3.移除等待队列中的队头任务，然后重新尝试加入队列
         public static class DiscardOldestPolicy implements RejectedExecutionHandler {...}
-        // 4.由主线程直接执行此任务 
+        // 4.由主线程直接执行此任务（直接执行任务的run方法）
         public static class CallerRunsPolicy implements RejectedExecutionHandler {...}
     }
     ```
