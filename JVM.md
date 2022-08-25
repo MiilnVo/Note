@@ -267,6 +267,7 @@ https://club.perfma.com/article/1870333
   * 启动类加载器：<JAVA_HOME>\lib
   * 扩展类加载器：<JAVA_HOME>\lib\ext
   * 应用程序类加载器：<Class_Path>
+  * 自定义类加载器
 
 * 加载时机（类的主动引用）
   1. new对象
