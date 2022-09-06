@@ -1,8 +1,8 @@
 ### Redis
 
-全称：<u>Re</u>mote <u>Di</u>ctionary <u>S</u>erver（远程字典服务）
+全称：**Re**mote **Di**ctionary **S**erver（远程字典服务）
 
-定义：NoSQL（Not Only SQL）数据库
+定位：NoSQL（Not Only SQL）数据库
 
 存储形式：键值对（Key - Value）
 
@@ -14,8 +14,20 @@
 
 ####  线程模型
 
-* 单进程单线程
-* 多路I/O复用模型（多路指多个网络连接，复用指共用一条线程）
+文件事件处理器（**单进程单线程**）：
+
+![s4wbv](http://img.miilnvo.xyz/s4wbv.png)
+
+* I/O多路复用程序：监听多个Socket，将产生事件的Socket放入一条队列中依次处理
+
+  > 多路指多个网络连接，复用指共用一条线程
+
+  > 会自动选择系统中性能最高的I/O多路复用函数（select、epoll、evport、kqueue）
+
+* 文件事件分配器：根据Socket产生的事件类型，调用相应的处理器
+
+* 文件事件处理器：包括连接应答处理器、命令请求处理器和命令回复处理器
+
 
 > Q：为什么要设计成单线程？
 >
@@ -31,66 +43,263 @@
 
 
 
+#### 底层数据结构
 
-#### 数据类型
+* SDS（Simple Dynamic String，简单动态字符串）
 
-> 指的是Key - Value中Value的数据类型
+   ```c
+   struct sdshdr {
+   		int len;  // buf数组中已使用的字节数量
+   		int free;  // buf数组中未使用的字节数量
+   		char buf[];  // 用于保存字符串
+   }
+   ```
+   
+   ![1qphy](http://img.miilnvo.xyz/1qphy.png)
+
+   > 应用：Key、AOF缓冲区
+
+* Linked List（双端无环链表）
+
+   ```c
+   typedef struct listNode {
+   		struct listNode *prev;
+   		struct listNode *next;
+   		void *value;
+   } listNode;
+   ```
+
+   ```c
+   typedef struct list {
+   		listNode *head;
+   		listNode *tail;
+   		unsigned long len;
+   		void *(*dup)(void *ptr);  // 节点值复制函数
+   		void (*free)(void *ptr);  // 节点值释放函数
+   		int (*match)(void *ptr, void *key);  // 节点值对比函数
+   } list;
+   ```
+
+   > 应用：List数据类型、发布订阅、慢查询、监视器等
+
+* Dict（字典）
+
+   ```c
+   typedef struct dict {
+   		dictType *type;  // 特定类型函数
+   		void *privdata;  // 私有数据
+   		dictht ht[2];  // 哈希表，[0]存储数据，[1]扩容时使用
+   		int rehashidx;  // 当不在进行rehash时值为-1
+   }
+   ```
+   
+   ```c
+   typedef struct dictht {
+   		dictEntry **table;  // 哈希表数组
+   		unsigned long size;  // 数组大小
+   		unsigned long sizemask;  // 总等于size-1
+   		unsigned long used;  // 已使用的数量
+   } dictht;
+   ```
+   
+   ```c
+   typedef struct dictEntry {
+   		void *key;
+   		union {
+   				void *val;
+   				uint64_tu64;
+   				int64_ts64;
+   		} v;
+   		struct dictEntry *next;  // 指向下个哈希表节点，形成链表
+   }
+   ```
+   
+   <img src="http://img.miilnvo.xyz/h6712.png" alt="h6712" style="zoom: 50%;" />
+
+   哈希算法为MurmurHash3
+
+   使用单向链表解决键冲突
+
+   > 应用：Hash数据类型、Redis的数据库
+
+* Skip List（跳跃表）
+
+   ```c
+   typedef struct zkiplistNode {
+   		// 层级
+   		struct zkiplistLevel {
+   				// 前进指针
+   				struct zkiplistNode *forward;
+   				// 跨度
+   				unsigned int span;
+   		} level[];
+   		// 后退指针
+   		struct zskiplistNode *backward;
+   		// 分值，按照此值从小到大排列
+   		double score;
+   		// 对象
+   		robj *obj;
+   } zskiplistNode;
+   ```
+
+   ```c
+   typedef struct zkiplist {
+   		// 头节点和尾节点
+   		structz skiplistNode *header, *tail;
+   		// 节点数量
+   		unsigned long length;
+   		// 节点层数
+   		int level;
+   }
+   ```
+
+   <img src="http://img.miilnvo.xyz/k4iob.png" alt="k4iob" style="zoom: 60%;" />
+
+   > 应用：Zset数据类型
+
+   【参考】https://www.bilibili.com/video/BV1tK4y1X7de
+
+* Int Set（整数集合）
+
+   ```c
+   typedef struct intset {
+   		// 编码方式：int16_t，int32_t，int64_t
+   		uint32_t encoding;
+   		// 元素数量
+   		uint32_t length;
+   		// 元素数组，从小到大排列，保证不出现重复元素
+   		int8_t contents[];
+   } intset;
+   ```
+
+   升级机制：当新元素的类型比现有的长时，要重新分配空间，所以向整数集合添加新元素的时间复杂度为O(N)
+
+   > 升级的优点：提升灵活性、节约内存
+
+   > 应用：Set数据类型
+
+* Zip List（压缩列表）
+
+   <img src="http://img.miilnvo.xyz/n219y.png" alt="n219y" style="zoom:60%;" />
+
+   ![q8xd3](http://img.miilnvo.xyz/q8xd3.png)
+   
+   entry结构：
+   
+   <img src="http://img.miilnvo.xyz/jydor.png" alt="jydor" style="zoom:60%;" />
+   
+   * previous_entry_length：前一个节点的长度，1字节或5字节，会受新节点的content影响而产生连锁更新问题
+   
+   * encoding：字节数组编码和纯整数编码，1字节、2字节或5字节
+   
+   * content：具体的节点值
+   
+   不像数组那样以最大长度的字符串大小作为所有元素的大小，避免浪费空间
+   
+   使用紧凑的连续内存块顺序存储数据（最小2字节，最大10字节），未使用Linked List的listNode和Dict的dictEntry结构（都是24字节）
+   
+   访问元素时采用的是从后往前遍历，因此热点Key是放在最后的，以此可以提升性能
+   
+   > 应用：Set数据类型、Hash数据类型
+
+
+
+#### 五大数据类型
+
+每次在Redis的数据中创建一个键值对时，至少会创建两个`redisObject`对象
+
+Key始终是一个字符串类型，Value则有5种
+
+```c
+typedef struct redisObject {
+		// 类型，共5种
+		unsigned type:4;
+  	// 编码，共8种
+  	unsigned encoding:4;
+  	// 指向底层数据结构的指针
+  	void *ptr;
+  	// 引用计数：当被引用时加1，不再引用是减1，为0时被释放
+  	int refcount;
+  	// 最后一次访问的时间差：当前时间减去创建时间
+  	// 与内存淘汰策略中的volatile-lru和allkeys-lru有关
+  	unsigned lru:22;
+}
+```
+
+5种类型：`REDIS_STRING`、`REDIS_LIST`、`REDIS_HASH`、`REDIS_SET`、`REDIS_ZSET`
+
+8种编码：`REDIS_ENCODING_INT`、`REDIS_ENCODING_EMBSTR`、`REDIS_ENCODING_RAW`、
+
+`REDIS_ENCODING_HT`、`REDIS_ENCODING_LINKEDLIST`、`REDIS_ENCODING_ZIPLIST`、
+
+`REDIS_ENCODING_INTSET`、`REDIS_ENCODING_SKIPLIST`
+
+> 8种编码 = 6种数据结构 + INT + RAW
+
+每种类型至少对应两种编码，可以根据不同的使用场景来为一个对象设置不同的编码，极大地提升了灵活性和效率
+
+一个命令可以处理多种不同类型的键，一个命令也可以处理多种不同的编码
+
+> 对象共享：初始化时创建了0-9999的所有整数值
 
 * String（字符串）
 
   ![x3a4n](http://img.miilnvo.xyz/x3a4n.jpg)
 
-  `SET <key> <value>`：增加值
+  ```redis
+  SET <key> <value>：增加值
+  GET <key>：返回值
+  GETSET <key> <value>：增加值，并返回旧值
+  INCR / DECR <key>：值增/减1
+  INCRBY / DECRBY <key> <inc>：值增/减inc
+  APPEND <key> <value>：增加到原来值的末尾
+  ```
 
-  `GET <key>`：返回值
-
-  `GETSET <key> <value>`：增加值，并返回旧值
-
-  `INCR / DECR <key>`：值增/减1
-
-  `INCRBY / DECRBY <key> <inc>`：值增/减inc
-
-  `APPEND <key> <value>`：增加到原来值的末尾
+  如果是整数值则用INT，如果是字符串且长度小于32字节则用EMBSTR，大于32字节则用RAW。EMBSTR比RAW的优势在于只调用一次内存分配函数
 
   > 应用场景：原子计数
+
+* List（列表）
+
+  ![6bnfx](http://img.miilnvo.xyz/6bnfx.png)
+
+  ```redis
+  LPUSH / RPUSH <key> [value1]：增加多个值到列表头/列表尾
+  LPOP / RPOP <key>：删除并返回第一个值/最后一个值
+  LSET <key> <index> <value>：通过索引设定值
+  LINDEX <key> <index>：通过索引返回值
+  ```
+
+  如果保存的所有元素长度都小于64字节且数量小于512个则用LINKEDLIST，否则用ZIPLIST
+
+  > 应用场景：关注列表、评论列表
 
 * Hash（哈希）
 
   ![ntwha](http://img.miilnvo.xyz/ntwha.png)
 
-  `HMSET <key> [field1 value1]`：把多个field-value设定到key中
+  ```redis
+  HMSET <key> [field1 value1]：把多个field-value设定到key中
+  HKEYS <key>：返回key的所有字段
+  HGET <key> <field>：返回key的字段的值
+  HDEL <key> [field1]：删除多个key的字段
+  ```
 
-  `HKEYS <key>`：返回key的所有字段
-
-  `HGET <key> <field>`：返回key的字段的值
-
-  `HDEL <key> [field1]`：删除多个key的字段
+  如果保存的所有元素长度都小于64字节且数量小于512个则用ZIPLIST，否则用HT（Dict）
 
   > 应用场景：结构化数据（用户信息）
-
-* List（集合）
-
-  ![6bnfx](http://img.miilnvo.xyz/6bnfx.png)
-
-  `LPUSH / RPUSH <key> [value1]`：增加多个值到列表头/列表尾
-
-  `LPOP / RPOP <key>`：删除并返回第一个值/最后一个值
-
-  `LSET <key> <index> <value>`：通过索引设定值
-
-  `LINDEX <key> <index>`：通过索引返回值
-
-  > 应用场景：列表（关注列表、评论列表）
 
 * Set（无序集合）
 
   与List类似，但是元素唯一
 
-  `SADD <key> [value1]`：增加多个值
+  ```redis
+  SADD <key> [value1]：增加多个值
+  SREM <key> [value1]：删除多个值
+  SMEMBERS <key>：返回所有值
+  ```
 
-  `SREM <key> [value1]`：删除多个值
-
-  `SMEMBERS <key>`：返回所有值
+  如果保存的所有元素都是整数值且数量小于512个则用INTSET，否则用HT（Dict）
 
   > 应用场景：微博的所有关注人、QQ个人标签
 
@@ -100,11 +309,21 @@
 
   ![0q9ni](http://img.miilnvo.xyz/0q9ni.png)
 
-  `ZADD <key> [score1 value1]`：增加多个值
-
-  `ZREM <key> [value1]`：删除多个值
-
-  `ZRANK <key> <value>`：返回值的分数值
+  ```redis
+  ZADD <key> [score1 value1]：增加多个值
+  ZREM <key> [value1]：删除多个值
+  ZRANK <key> <value>：返回值的分数值
+  ```
+  
+  如果保存的所有元素长度都小于64字节且数量小于128个则用ZIPLIST，否则用SKIPLIST。后者同时使用Dict和Skip List，优点是既能以O(1)查找元素，又能以O(NlogN)进行排序
+  
+  ```c
+  // REDIS_ENCODING_SKIPLIST编码
+  typedef struct zset {
+    zskiplist *zsl;
+    dict *dict;
+  } zset;
+  ```
   
   > 应用场景：排行榜（按照点赞排序）、过期项目（把score设置成过期时间）
 
@@ -114,19 +333,27 @@
 
 
 
-#### 事务
+#### 数据库
 
-保证命令的批量顺序执行，执行过程中其他客户端提交的命令请求不会插入到事务执行命令的序列中
+```c
+struct redisServer {
+  	redisDB *db;  // 数据库数组
+  	int dbnum;  // 数据库个数
+}
+```
 
-批量操作在发送`EXEC`命令前被放入队列缓存，收到`EXEC`命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行（不会回滚！）
+```c
+typedef struct redisDB {
+  	dict *dict;  // 保存着所有键值对
+  	dict *expires;	// 保存着所有键的过期时间
+}
+```
 
-`MULTI`：开始一个事务
+![2lgml](http://img.miilnvo.xyz/2lgml.png)
 
-`EXEC`：执行事务块内的命令
 
-`DISCARD`：放弃一个事务
 
-`WATCH [key]`：监视Key，如果在事务执行前Key有改动，则事务将不会执行
+---
 
 
 
@@ -140,7 +367,7 @@
 
   * 手动执行`save`命令：会阻塞主进程，不建议使用
   * 手动执行`bgsave`命令：使用操作系统的`fock()`生成一个子进程
-  * 指定时间内达到某种条件时自动生成（默认开启）
+  * 指定时间内达到某种条件时自动执行`bgsave`命令（默认开启）
 
 * AOF（Append Olny File）
 
@@ -183,19 +410,24 @@
 
 * 惰性删除
 
-  Key刚过期的时候不删除，每次获取Key的时候去检查是否过期，对已过期的Key执行删除
+  Key刚过期的时候不删除，每次获取Key的时候通过expireIfNeeded函数去检查是否过期，对已过期的Key执行删除
 
 * 定期删除
 
-  每隔一段时间扫描一定数量的Key，对已过期的Key执行删除
+  每隔一段时间（默认每隔100ms）通过serverCron函数里的activeExpireCycle函数分批遍历各个数据库，从数据库的expires字典里扫描一定数量的Key，对已过期的Key执行删除
+  
 
-> 已过期的Key不会持久化到RDB文件，也不会导入回Redis
->
-> 已过期的Key会向AOF文件追加一条del命令
+> 已过期的Key不会持久化到RDB文件，以主服务器模式启动时也不会导入回Redis，但以从模式启动时会导入，不过在进行主从同步时从服务器的数据库会被清空，所以也没有影响
+
+> 已过期的Key会向AOF文件追加一条DEL命令，也不会保存到重写后的AOF文件中
+
+> v3.2版本之前读从库时不会通过惰性删除的方式删除已过期的Key，依赖主节点同步过来的删除命令
 
 【参考】
 
 https://www.cnblogs.com/java-zhao/p/5205771.html
+
+https://blog.csdn.net/itomge/article/details/121298609
 
 
 
@@ -221,6 +453,42 @@ https://www.cnblogs.com/java-zhao/p/5205771.html
 <https://blog.csdn.net/caishenfans/article/details/44902651>
 
 <https://juejin.im/post/5d107ad851882576df7fba9e>
+
+
+
+#### 发布与订阅
+
+PUBLISH（发送）、SUBSCRIBE（订阅）、PSUBSCRIBE（订阅模式）
+
+订阅模式发送时要遍历列表
+
+
+
+#### 数据通知
+
+键空间通知：对某个键执行了什么命令
+
+键事件通知：某个命令被什么键执行了
+
+
+
+#### 事务
+
+保证命令的批量顺序执行，执行过程中其他客户端提交的命令请求不会插入到事务执行命令的序列中
+
+批量操作在发送`EXEC`命令前被放入队列缓存，收到`EXEC`命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行（不会回滚！）
+
+`MULTI`：开始一个事务
+
+`EXEC`：执行事务块内的命令
+
+`DISCARD`：放弃一个事务
+
+`WATCH [key]`：监视Key，如果在事务执行前Key有改动，则事务将不会执行
+
+
+
+---
 
 
 
@@ -338,7 +606,7 @@ https://www.pianshen.com/article/9575185943/
     String result = jedis.set(String key,
                               String value,
                               String nxxx,  // nxxx：当Key不存在时才进行Set操作
-                              String expx,  // expx：过期时间，避免当前客户端挂掉后一直无法释放锁
+                              String expx,  // expx：过期时间，避免当前客户端挂掉后一直无法释放锁  
                               int time);
     ```
     
@@ -375,7 +643,7 @@ https://www.pianshen.com/article/9575185943/
 
   <https://juejin.im/post/5b737b9b518825613d3894f4>
 
-* 集群部署
+* 集群部署  
 
   一般集群的缺陷：客户端A先在master节点拿到了锁，master节点在把A创建的Key写入slave之前宕机了（主从复制是异步的），slave变成了master节点。因为这时的slave里还没有A持有锁的信息，所以客户端B也可以得到和A还持有的相同的锁
 
@@ -471,4 +739,3 @@ redisTemplate.execute(sessionCallback);
   https://www.jianshu.com/p/4370bc75f5a6
 
   https://blog.csdn.net/raoxiaoya/article/details/93639617
-
