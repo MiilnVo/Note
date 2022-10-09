@@ -37,7 +37,7 @@
 
 > CA：MySQL、Oracle等单点架构
 >
-> CP：Zookeeper、Nacos、Seata（XA）
+> CP：ZooKeeper、Nacos、Seata（XA）
 >
 > AP：Eureka、Redis、RabbitMQ、RocketMQ、Nacos、Seata（AT、TCC、Sage）
 

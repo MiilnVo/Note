@@ -155,6 +155,8 @@
 
    <img src="http://img.miilnvo.xyz/k4iob.png" alt="k4iob" style="zoom: 60%;" />
 
+   跳跃表是可以实现二分查找的有序链表
+
    > 应用：Zset数据类型
 
    【参考】https://www.bilibili.com/video/BV1tK4y1X7de

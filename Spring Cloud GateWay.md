@@ -163,3 +163,9 @@ filters:
 https://cloud.tencent.com/developer/article/1424570
 
 https://blog.51cto.com/u_15127655/4107292
+
+
+
+#### 其他
+
+* 与Nacos整合后无需添加任何配置，即可实现路由配置动态刷新
