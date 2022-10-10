@@ -37,6 +37,8 @@ Namespace + Group + Service / Data Id
 
 * Raft（CP）：配置管理、持久化实例的服务注册发现
 
+【参考】https://blog.csdn.net/yaoxie1534/article/details/125657808
+
 
 
 #### 服务注册发现
@@ -89,15 +91,15 @@ ZooKeeper（CP）：采用ZAB原子广播协议（基于2PC），当Leader宕机
 
 > Eureka不能支持大量的服务实例的原因：
 >
-> ​	Eureka所有的服务实例在每一台Eureka Server中都保存了
+> Eureka所有的服务实例在每一台Eureka Server中都保存了
 >
-> ​	大量的服务实例会产生大量的心跳检测等信息，导致Eureka Server无法支持高并发的操作
->
+> 大量的服务实例会产生大量的心跳检测等信息，导致Eureka Server无法支持高并发的操作
+
 > ZooKeeper不能支持大量的服务实例的原因：
 >
-> ​	ZooKeeper会将服务实例的上线下线通知到每一个服务实例
+> ZooKeeper会将服务实例的上线下线通知到每一个服务实例
 >
-> ​	如果频繁的上下线的话，会去通知大量的服务实例，导致短时间网络压力增大，性能下降
+> 如果频繁的上下线的话，会去通知大量的服务实例，导致短时间网络压力增大，性能下降
 
 
 
