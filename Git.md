@@ -4,7 +4,7 @@
 
 #### 生命周期
 
-![1566540541368](image/1566540541368.png)
+![3bl3m](http://img.miilnvo.xyz/3bl3m.png)
 
 暂存区（Index）：执行add命令后的文件区域，第一次add后的内容，肯定会存放在暂存区
 
@@ -85,25 +85,25 @@
 
   合并（把dev-merge的代码合并到dev-3上）
 
-![git-01](image/git-01.png)
+![4plde](http://img.miilnvo.xyz/4plde.png)
 
 --ff：默认方式，条件是原先节点没有修改，合并后不会创造新的节点。删除了dev-merge分支后还是会有该分支的记录【Merge】
 
-![git-02](image/git-02.png)
+![dwfj1](http://img.miilnvo.xyz/dwfj1.png)
 
 --no-ff：即使在fast forward条件下也会产生一个新的commit（灰色描述）。删除了dev-merge分支后还是会有该分支的记录【No fast forwad】
 
 --no-commit：合并后需要手动执行一次commit，结果与--no-ff命令相同【No commit】
 
-![git-03](image/git-03.png)
+![n357h](http://img.miilnvo.xyz/n357h.png)
 
 --squash：dev-3分支上添加dev-merge分支的所有改动，再额外执行一次commit，之后在dev-3分支上将看不到dev-merge分支的commit记录【Squash commit】
 
-![git-04](image/git-04.png)
+![tabw9](http://img.miilnvo.xyz/tabw9.png)
 
 --log：添加合并日志【Add log information】
 
-![1564024722081](image/1564024722081.png)
+![vgaim](http://img.miilnvo.xyz/vgaim.png)
 
 * **git rebase**
 
