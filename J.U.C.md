@@ -2,7 +2,7 @@
 
 
 
-<img src="http://img.miilnvo.xyz/ofjz1.jpg" alt="ofjz1" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/ofjz1.jpg" alt="ofjz1" style="zoom:50%;" />
 
 
 
@@ -10,7 +10,7 @@
 
 #### Java内存模型
 
-![ihlsq](http://img.miilnvo.xyz/ihlsq.png)
+![ihlsq](http://img.miilnvo.com/ihlsq.png)
 
 用来屏蔽Java程序在各种不同的硬件和操作系统对内存访问的差异
 
@@ -156,7 +156,7 @@ public final int getAndAddInt(Object o, long offset, int delta) {
 
 AbstractQueuedSynchronizer（抽象队列同步器）
 
-![5yh7u](http://img.miilnvo.xyz/5yh7u.png)
+![5yh7u](http://img.miilnvo.com/5yh7u.png)
 
 > 同步队列中的等待线程是等待获取锁，等待队列中的等待线程是等待唤醒
 
@@ -310,7 +310,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
   }
   ```
 
-  ![60pyh](http://img.miilnvo.xyz/60pyh.jpg)
+  ![60pyh](http://img.miilnvo.com/60pyh.jpg)
 
 * 唤醒线程
 
@@ -335,7 +335,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
   }
   ```
 
-  ![l7wnm](http://img.miilnvo.xyz/l7wnm.jpg)
+  ![l7wnm](http://img.miilnvo.com/l7wnm.jpg)
 
 > 无论是释放锁之后的唤醒，还是`signal()`方法的唤醒，最终都是在同步队列中进行的，并且是按照队列中的先后顺序，会先唤醒头结点
 
@@ -721,7 +721,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
 
 * BlockingQueue接口（阻塞队列）
 
-  ![m82re](http://img.miilnvo.xyz/m82re.png)
+  ![m82re](http://img.miilnvo.com/m82re.png)
 
   | 所在类 \| 结果 | Collection \| 抛异常 | Queue \| 返回boolean或null | BlockingQueue \| 阻塞 |
   | :------------: | :------------------: | :------------------------: | :-------------------: |
@@ -862,7 +862,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
 
 ##### Future
 
-<img src="http://img.miilnvo.xyz/n5poq.jpg" alt="n5poq" style="zoom: 50%;" />
+<img src="http://img.miilnvo.com/n5poq.jpg" alt="n5poq" style="zoom: 50%;" />
 
 * Callable接口：与Runnable接口的作用相似，只有一个`call()`方法，有返回值且可以拋异常
 
@@ -965,7 +965,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
 
 ##### Executor
 
-<img src="http://img.miilnvo.xyz/ra6a0.jpg" alt="ra6a0" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/ra6a0.jpg" alt="ra6a0" style="zoom:50%;" />
 
 * Executor接口：线程执行的入口
 
@@ -1413,7 +1413,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
 
 > v1.8的ParallelStream的底层使用的就是ForkJoin
 
-<img src="http://img.miilnvo.xyz/aqyya.png" alt="aqyya" style="zoom: 25%;" />
+<img src="http://img.miilnvo.com/aqyya.png" alt="aqyya" style="zoom: 25%;" />
 
 * ForkJoinPool类
 
@@ -1516,7 +1516,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
   
   计算400个随机数的和：创建4条线程，每条线程计算100个数，最后再加起来
   
-  <img src="http://img.miilnvo.xyz/czoo7.png" alt="czoo7" style="zoom:85%;" />
+  <img src="http://img.miilnvo.com/czoo7.png" alt="czoo7" style="zoom:85%;" />
   
   ```java
   public void demo() {
@@ -1563,7 +1563,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
   }
   ```
   
-  <img src="http://img.miilnvo.xyz/azoho.jpg" alt="azoho" style="zoom:50%;" />
+  <img src="http://img.miilnvo.com/azoho.jpg" alt="azoho" style="zoom:50%;" />
 
 【参考】
 
@@ -1579,7 +1579,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
 
 * ThreadLocal
 
-  ![z1ort](http://img.miilnvo.xyz/z1ort.png)
+  ![z1ort](http://img.miilnvo.com/z1ort.png)
 
   Thread拥有一个ThreadLocalMap属性，ThreadLocalMap拥有一个Entry数组，Entry以ThreadLocal当Key
 
@@ -1772,7 +1772,7 @@ AbstractQueuedSynchronizer（抽象队列同步器）
   >
   > 多线程：后者性能是前者的数倍甚至十倍
 
-  ![cjg55](http://img.miilnvo.xyz/cjg55.jpg)
+  ![cjg55](http://img.miilnvo.com/cjg55.jpg)
 
   ```java
   abstract class Striped64 extends Number {

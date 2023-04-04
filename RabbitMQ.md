@@ -8,7 +8,7 @@
 
 基于TCP的应用层协议，RabbitMQ是此协议的Erlang的实现
 
-![byiw1](http://img.miilnvo.xyz/byiw1.png)
+![byiw1](http://img.miilnvo.com/byiw1.png)
 
 
 
@@ -61,7 +61,7 @@ Channel channel = connection.createChannel();
 
   * 备份交换器
 
-    ![5yv9d](http://img.miilnvo.xyz/5yv9d.png)
+    ![5yv9d](http://img.miilnvo.com/5yv9d.png)
 
 * 创建队列
   ```java
@@ -91,7 +91,7 @@ Channel channel = connection.createChannel();
 
     > 如果消费者订阅的不是queue.normal队列而是queue.dlx队列，那么死信队列就变成了延迟队列
 
-    ![zyx1j](http://img.miilnvo.xyz/zyx1j.png)
+    ![zyx1j](http://img.miilnvo.com/zyx1j.png)
 
 * 队列与交换器绑定
   ```java
@@ -352,7 +352,7 @@ Channel#`basicQos(10)`方法：设定消费者最多未确定消息的数量为1
 
   * 缺点：集群内部的网络带宽将会被这种大量的同步通讯消耗掉，无法线性扩容
 
-  ![wvnt0](http://img.miilnvo.xyz/wvnt0.png)
+  ![wvnt0](http://img.miilnvo.com/wvnt0.png)
 
 【参考】
 

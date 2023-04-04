@@ -4,7 +4,7 @@
 
 #### 架构
 
-![2u1bu](http://img.miilnvo.xyz/2u1bu.png)
+![2u1bu](http://img.miilnvo.com/2u1bu.png)
 
 * 服务层
 
@@ -60,7 +60,7 @@
 
 > 浅色为存储引擎层，深色为服务层
 
-![klm89](http://img.miilnvo.xyz/klm89.png)
+![klm89](http://img.miilnvo.com/klm89.png)
 
 发生崩溃时原库用redo log恢复，备份数据时备份库用bin log恢复，两段提交保证了一致性，但无法保证不丢失数据
 
@@ -221,7 +221,7 @@ Multi-Version Concurrency Control（多版本并发控制）
 
 N阶B+树：
 
-![iqoob](http://img.miilnvo.xyz/iqoob.png)
+![iqoob](http://img.miilnvo.com/iqoob.png)
 
 一个节点的长度（默认16kb）为页（4kb）的整数倍，通过磁盘预读（局部性原理），一次磁盘I/O操作可以读取多个页
 
@@ -246,7 +246,7 @@ http://blog.codinglabs.org/articles/theory-of-mysql-index.html
 
 > InnoDB是聚簇索引，MyISAM是非聚簇索引
 
-![f92um](http://img.miilnvo.xyz/f92um.png)
+![f92um](http://img.miilnvo.com/f92um.png)
 
 
 
@@ -360,7 +360,7 @@ varchar(X) 最大能存储65535字符，最大长度与编码方式有关
 
 执行顺序：`FROM` => `WHERE` => `GROUP BY` => `HAVING` => `SELECT` =>  `ORDER BY`
 
-![i81ou](http://img.miilnvo.xyz/i81ou.png)
+![i81ou](http://img.miilnvo.com/i81ou.png)
 
 ##### JOIN
 
@@ -705,3 +705,5 @@ SELECT * FROM t1 JOIN t2 USING(id)
 ```mysql
 ALTER TABLE 副表名 ADD CONSTRAINT 外键名 FOREIGN KEY(副表的外键) REFERENCES 主表名(主表的主键)
 ```
+
+单表数据量控制在2000w以下性能最佳

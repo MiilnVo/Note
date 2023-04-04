@@ -4,7 +4,7 @@
 
 #### 内存区域
 
-![x8cps](http://img.miilnvo.xyz/x8cps.png)
+![x8cps](http://img.miilnvo.com/x8cps.png)
 
 * 栈（Stack）
 
@@ -219,7 +219,7 @@ https://club.perfma.com/article/1870333
   public final int num1 = 5;
   ```
 
-  ![0q3w3](http://img.miilnvo.xyz/0q3w3.png)
+  ![0q3w3](http://img.miilnvo.com/0q3w3.png)
 
 * 方法表
 

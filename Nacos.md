@@ -10,7 +10,7 @@
 
 ##### 架构
 
-![keizv](http://img.miilnvo.xyz/keizv.png)
+![keizv](http://img.miilnvo.com/keizv.png)
 
 * Nacos Server
   * 接口层：OpenAPI、Console、SDK、Agent、CLI

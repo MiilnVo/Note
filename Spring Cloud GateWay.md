@@ -24,7 +24,7 @@ spring.cloud.gateway.routes[0].filters[1]= AddUserInfo=systemId, 389
 
 #### 流程
 
-<img src="http://img.miilnvo.xyz/nf5pz.png" alt="nf5pz" style="zoom: 50%;" />
+<img src="http://img.miilnvo.com/nf5pz.png" alt="nf5pz" style="zoom: 50%;" />
 
 
 
@@ -156,7 +156,7 @@ filters:
 
 规则三：Order值越小，优先级越高，执行顺序越靠前
 
-<img src="http://img.miilnvo.xyz/gfpno.png" alt="gfpno"  />
+<img src="http://img.miilnvo.com/gfpno.png" alt="gfpno"  />
 
 【参考】
 

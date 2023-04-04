@@ -6,13 +6,13 @@
 
 #### 架构
 
-<img src="http://img.miilnvo.xyz/1k8q7.png" alt="1k8q7" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/1k8q7.png" alt="1k8q7" style="zoom:50%;" />
 
 
 
 #### 核心概念
 
-<img src="http://img.miilnvo.xyz/03akk.png" alt="03akk" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/03akk.png" alt="03akk" style="zoom:50%;" />
 
 * 主题（Topic）
 
@@ -47,7 +47,7 @@
 
 #### 偏移量
 
-<img src="http://img.miilnvo.xyz/4nbwp.png" alt="4nbwp" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/4nbwp.png" alt="4nbwp" style="zoom:50%;" />
 
 HW：下一条可消费消息的offset
 
@@ -59,7 +59,7 @@ LEO：下一条待写入消息的offset
 
 #### 生产者
 
-![gfqnw](http://img.miilnvo.xyz/gfqnw.png)
+![gfqnw](http://img.miilnvo.com/gfqnw.png)
 
 KafkaProducer是线程安全的，由两个线程（主线程+Sender线程）协调运行
 
@@ -117,7 +117,7 @@ KafkaProducer是线程安全的，由两个线程（主线程+Sender线程）协
 
 #### 消费者
 
-<img src="http://img.miilnvo.xyz/djl7h.png" alt="djl7h" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/djl7h.png" alt="djl7h" style="zoom:50%;" />
 
 ```java
 Properties props = new Properties();
@@ -162,11 +162,11 @@ KafkaConsumer非线程安全，无法在多个线程间共用同一个Consumer
 
 ####消息存储
 
-<img src="http://img.miilnvo.xyz/sfb1g.png" alt="sfb1g" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/sfb1g.png" alt="sfb1g" style="zoom:50%;" />
 
-<img src="http://img.miilnvo.xyz/91r1o.jpg" alt="91r1o" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/91r1o.jpg" alt="91r1o" style="zoom:50%;" />
 
-<img src="http://img.miilnvo.xyz/fij5h.png" alt="fij5h" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/fij5h.png" alt="fij5h" style="zoom:50%;" />
 
 根据消息数量的偏移量进行命名
 
@@ -176,7 +176,7 @@ __consumer_offsets-N：一种自动创建的特殊Topic，用于保存已消费�
 
   v2版本，RecordBatch对应ProducerBatch
 
-<img src="http://img.miilnvo.xyz/jwiav.png" alt="jwiav" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/jwiav.png" alt="jwiav" style="zoom:50%;" />
 
 * 索引
 
@@ -186,13 +186,13 @@ __consumer_offsets-N：一种自动创建的特殊Topic，用于保存已消费�
 
     相对偏移量（4B） + 物理地址（4B）
 
-    ![96g7x](http://img.miilnvo.xyz/96g7x.png)
+    ![96g7x](http://img.miilnvo.com/96g7x.png)
 
   * 时间戳索引（.timeindex）
 
     时间戳（8B）+ 相对偏移量（4B）
 
-    ![sjwae](http://img.miilnvo.xyz/sjwae.png)
+    ![sjwae](http://img.miilnvo.com/sjwae.png)
 
 * 磁盘I/O
 
@@ -212,7 +212,7 @@ FetchRequest/FetchResponse
 
 #### 时间轮
 
-![4kp20](http://img.miilnvo.xyz/4kp20.png)
+![4kp20](http://img.miilnvo.com/4kp20.png)
 
 底层是一个环形数组，而数组中每个元素都存放一个双向链表TimerTaskList，链表中封装了很多延时任务
 
@@ -224,7 +224,7 @@ FetchRequest/FetchResponse
 
 推进：利用DelayQueue来进行时间推进
 
-![ogloo](http://img.miilnvo.xyz/ogloo.png)
+![ogloo](http://img.miilnvo.com/ogloo.png)
 
 > 每个bucket是一个双向链表，等价于TimerTaskList
 
@@ -271,7 +271,7 @@ $ bin/kafka-console-consumer.sh --topic TopicX --from-beginning --bootstrap-serv
 
 #### 其他
 
-![6vih0](http://img.miilnvo.xyz/6vih0.png)
+![6vih0](http://img.miilnvo.com/6vih0.png)
 
 因为Kafka的每个分区都会对应一个物理文件，当Topic数量增加时，分区数量也同时增加，消息分散的落盘策略反而会导致磁盘IO竞争激烈进而成为瓶颈
 

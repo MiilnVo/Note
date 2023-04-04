@@ -4,7 +4,7 @@
 
 #### 架构
 
-![85kag](http://img.miilnvo.xyz/85kag.png)
+![85kag](http://img.miilnvo.com/85kag.png)
 
 * TC（事务协调者）：维护全局和分支事务的状态
 
@@ -74,11 +74,11 @@
 
 ##### AT
 
-<img src="http://img.miilnvo.xyz/2wo66.png" alt="2wo66" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/2wo66.png" alt="2wo66" style="zoom:50%;" />
 
 第一阶段：执行本地事务
 
-<img src="http://img.miilnvo.xyz/wepuw.png" alt="image-20220825103231522" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/wepuw.png" alt="image-20220825103231522" style="zoom:50%;" />
 
 ```sql
 -- undo_log的表结构
@@ -98,7 +98,7 @@ CREATE TABLE `undo_log` (
 
 第二阶段：全部移除反向操作或执行反向操作
 
-<img src="http://img.miilnvo.xyz/7vb26.png" alt="image-20220825103652178" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/7vb26.png" alt="image-20220825103652178" style="zoom:50%;" />
 
 第一阶段和第二阶段的提交和反向操作均由框架自动生成，用户只需专注编写业务SQL即可，解决了TCC中的代码侵入
 

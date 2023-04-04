@@ -4,7 +4,7 @@
 
 #### 整体架构
 
-<img src="http://img.miilnvo.xyz/9t4ol.png" alt="9t4ol" style="zoom: 67%;" />
+<img src="http://img.miilnvo.com/9t4ol.png" alt="9t4ol" style="zoom: 67%;" />
 
 
 
@@ -210,11 +210,11 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
 * SqlSession
 
-  <img src="http://img.miilnvo.xyz/lxlpk.png" alt="lxlpk" style="zoom:50%;" />
+  <img src="http://img.miilnvo.com/lxlpk.png" alt="lxlpk" style="zoom:50%;" />
 
   DefaultSqlSession与SimpleExecutor的关系（策略模式）：
 
-  <img src="http://img.miilnvo.xyz/jrc3i.png" alt="image-20220624094717634" style="zoom:50%;" />
+  <img src="http://img.miilnvo.com/jrc3i.png" alt="image-20220624094717634" style="zoom:50%;" />
 
 
 
@@ -224,7 +224,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
 * Executor：获取XML解析后的信息、使用缓存、构造SQL
 
-  ![1pd0z](http://img.miilnvo.xyz/1pd0z.png)
+  ![1pd0z](http://img.miilnvo.com/1pd0z.png)
 
   > 左侧为MyBatis-Plus重写右侧的类
 
@@ -248,7 +248,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
 * StatementHandler：调度ParameterHandler和ResultHandler，生成Statement（承上启下）
 
-  ![sljl8](http://img.miilnvo.xyz/sljl8.png)
+  ![sljl8](http://img.miilnvo.com/sljl8.png)
 
   > RoutingStatementHandler：根据类型创建（左侧）对应的实现类
   >
@@ -301,7 +301,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   1. 在四个Configuration#newXXX()方法中创建代理对象，其会执行`pluginAll()`方法
 
-     <img src="http://img.miilnvo.xyz/saivb.png" alt="saivb" style="zoom:50%;" />
+     <img src="http://img.miilnvo.com/saivb.png" alt="saivb" style="zoom:50%;" />
 
      ```java
      public class InterceptorChain {
@@ -401,7 +401,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
     实现了一个简易的数据库连接池
 
-    ![tiu4a](http://img.miilnvo.xyz/tiu4a.png)
+    ![tiu4a](http://img.miilnvo.com/tiu4a.png)
 
 * Cache（缓存）
 

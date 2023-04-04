@@ -16,7 +16,7 @@
 
 文件事件处理器（**单进程单线程**）：
 
-![s4wbv](http://img.miilnvo.xyz/s4wbv.png)
+![s4wbv](http://img.miilnvo.com/s4wbv.png)
 
 * I/O多路复用程序：监听多个Socket，将产生事件的Socket放入一条队列中依次处理
 
@@ -55,7 +55,7 @@
    }
    ```
    
-   ![1qphy](http://img.miilnvo.xyz/1qphy.png)
+   ![1qphy](http://img.miilnvo.com/1qphy.png)
 
    > 应用：Key、AOF缓冲区
 
@@ -114,7 +114,7 @@
    }
    ```
    
-   <img src="http://img.miilnvo.xyz/h6712.png" alt="h6712" style="zoom: 50%;" />
+   <img src="http://img.miilnvo.com/h6712.png" alt="h6712" style="zoom: 50%;" />
 
    哈希算法为MurmurHash3
 
@@ -153,7 +153,7 @@
    }
    ```
 
-   <img src="http://img.miilnvo.xyz/k4iob.png" alt="k4iob" style="zoom: 60%;" />
+   <img src="http://img.miilnvo.com/k4iob.png" alt="k4iob" style="zoom: 60%;" />
 
    跳跃表是可以实现二分查找的有序链表
 
@@ -182,13 +182,13 @@
 
 * Zip List（压缩列表）
 
-   <img src="http://img.miilnvo.xyz/n219y.png" alt="n219y" style="zoom:60%;" />
+   <img src="http://img.miilnvo.com/n219y.png" alt="n219y" style="zoom:60%;" />
 
-   ![q8xd3](http://img.miilnvo.xyz/q8xd3.png)
+   ![q8xd3](http://img.miilnvo.com/q8xd3.png)
    
    entry结构：
    
-   <img src="http://img.miilnvo.xyz/jydor.png" alt="jydor" style="zoom:60%;" />
+   <img src="http://img.miilnvo.com/jydor.png" alt="jydor" style="zoom:60%;" />
    
    * previous_entry_length：前一个节点的长度，1字节或5字节，会受新节点的content影响而产生连锁更新问题
    
@@ -246,7 +246,7 @@ typedef struct redisObject {
 
 * String（字符串）
 
-  ![x3a4n](http://img.miilnvo.xyz/x3a4n.jpg)
+  ![x3a4n](http://img.miilnvo.com/x3a4n.jpg)
 
   ```redis
   SET <key> <value>：增加值
@@ -263,7 +263,7 @@ typedef struct redisObject {
 
 * List（列表）
 
-  ![6bnfx](http://img.miilnvo.xyz/6bnfx.png)
+  ![6bnfx](http://img.miilnvo.com/6bnfx.png)
 
   ```redis
   LPUSH / RPUSH <key> [value1]：增加多个值到列表头/列表尾
@@ -278,7 +278,7 @@ typedef struct redisObject {
 
 * Hash（哈希）
 
-  ![ntwha](http://img.miilnvo.xyz/ntwha.png)
+  ![ntwha](http://img.miilnvo.com/ntwha.png)
 
   ```redis
   HMSET <key> [field1 value1]：把多个field-value设定到key中
@@ -309,7 +309,7 @@ typedef struct redisObject {
 
   与List类似，但元素唯一且具有权重值
 
-  ![0q9ni](http://img.miilnvo.xyz/0q9ni.png)
+  ![0q9ni](http://img.miilnvo.com/0q9ni.png)
 
   ```redis
   ZADD <key> [score1 value1]：增加多个值
@@ -351,7 +351,7 @@ typedef struct redisDB {
 }
 ```
 
-![2lgml](http://img.miilnvo.xyz/2lgml.png)
+![2lgml](http://img.miilnvo.com/2lgml.png)
 
 
 
@@ -381,7 +381,7 @@ typedef struct redisDB {
 
   AOF重写：把冗余的命令合并成一条命令（直接把当前内存的数据生成对应命令，不需要读取旧AOF文件）。在子进程重写过程中会继续将新命令追加到重写缓存区（3-2）和旧的AOF文件中（3-1），后者的操作是为了避免重写过程中发生停机导致的数据丢失。此操作会自动触发或手动执行`bgrewriteaof`命令
 
-  ![78rgm](http://img.miilnvo.xyz/78rgm.jpg)
+  ![78rgm](http://img.miilnvo.com/78rgm.jpg)
 
 |    区别    |            RDB             |             AOF             |
 | :--------: | :------------------------: | :-------------------------: |
@@ -390,7 +390,7 @@ typedef struct redisDB {
 |  恢复速度  |             快             |             慢              |
 | 数据安全性 | 最多丢失在两次间隔内的数据 | 默认策略下最多丢失1秒的数据 |
 
-<img src="http://img.miilnvo.xyz/mogua.png" alt="image-20200827145436082" style="zoom:50%;" />
+<img src="http://img.miilnvo.com/mogua.png" alt="image-20200827145436082" style="zoom:50%;" />
 
 【参考】
 
@@ -547,7 +547,7 @@ myValue\r\n
     
     2. 部分同步：从节点断连重连时，向主节点发送`psync <master_id> <offset>`命令，通过判断ID和偏移量来判断是否需要对断连后的命令进行同步
 
-  <img src="http://img.miilnvo.xyz/29yk3.jpg" alt="29yk3" style="zoom: 70%;" />
+  <img src="http://img.miilnvo.com/29yk3.jpg" alt="29yk3" style="zoom: 70%;" />
 
   * 特点
 
@@ -565,7 +565,7 @@ myValue\r\n
 
   哈希槽：先用CRC16算法，再把结果对16384求余数，最后把值放到对应范围间的Redis节点中（0-16383）
 
-  <img src="http://img.miilnvo.xyz/6pe3x.png" alt="image-20200827162819831" style="zoom:50%;" />
+  <img src="http://img.miilnvo.com/6pe3x.png" alt="image-20200827162819831" style="zoom:50%;" />
 
   连接任意节点后，根据同样的算法在内部跳转到相应的节点上获取值
   
