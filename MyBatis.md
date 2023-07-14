@@ -18,7 +18,7 @@ MybatisMapperProxy#invoke();
 MybatisMapperMethod#execute();
 // MyBatis-Spring部分
 SqlSessionTemplate#selectOne();
-（SqlSessionInterceptor#invoke();
+SqlSessionInterceptor#invoke();
 // MyBatis部分
 DefaultSqlSession#selectOne();
 ```
@@ -164,9 +164,9 @@ public class SimpleExecutor extends AbstractBaseExecutor {
       Statement stmt = null;
       try {
         Configuration configuration = ms.getConfiguration();
-        // 2-3-2-1.构造StatementHandler
+        // 2-3-2-1.构造StatementHandler，包含绝大部分的属性
         StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
-        // 2-3-2-2.把SQL中的?替换成真正的参数
+        // 2-3-2-2.并把SQL中的?替换成真正的参数
         stmt = prepareStatement(handler, ms.getStatementLog());
         // 2-3-2-3.继续查询
         return stmt == null ? Collections.emptyList() : handler.query(stmt, resultHandler);
@@ -184,8 +184,11 @@ public class MybatisDefaultParameterHandler extends DefaultParameterHandler {
     public void setParameters(PreparedStatement ps) {
     	// 2-3-2-2-1.循环赋值
       for (int i = 0; i < parameterMappings.size(); i++) {
+        // ParameterMapping的作用是将Java对象中的各个属性的类型映射为SQL语句中对应的类型
+        ParameterMapping parameterMapping = parameterMappings.get(i);
 				MetaObject metaObject = configuration.newMetaObject(parameterObject);
 				value = metaObject.getValue(propertyName);
+        TypeHandler typeHandler = parameterMapping.getTypeHandler();
       }
     }
 }
